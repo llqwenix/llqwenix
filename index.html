@@ -94,106 +94,6 @@
             font-size: 28px;
         }
 
-        /* Мини-плеер */
-        .mini-player {
-            background: rgba(0, 20, 0, 0.8);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .player-cover {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #0a3a0a, #0a1a0a);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-        }
-
-        .player-info {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .player-title {
-            font-weight: 600;
-            color: #00ff88;
-            font-size: 14px;
-        }
-
-        .player-artist {
-            color: #00aa66;
-            font-size: 12px;
-        }
-
-        .player-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .player-btn {
-            background: linear-gradient(135deg, #0a4d0a, #00aa44);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .player-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(0, 255, 68, 0.5);
-        }
-
-        .player-progress {
-            flex: 2;
-            min-width: 200px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(0, 255, 68, 0.2);
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00aa44, #00ff88);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 10px;
-            color: #00aa66;
-        }
-
-        .no-playing {
-            color: #008844;
-            text-align: center;
-            width: 100%;
-        }
-
         .add-song-form {
             background: rgba(0, 20, 0, 0.6);
             border-radius: 15px;
@@ -239,10 +139,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
         }
 
-        .form-group input::placeholder {
-            color: rgba(0, 255, 136, 0.5);
-        }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -277,12 +173,10 @@
         }
 
         .song-cover {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border-radius: 10px;
             object-fit: cover;
-            background: linear-gradient(135deg, #0a3a0a, #0a1a0a);
-            border: 1px solid rgba(0, 255, 0, 0.3);
         }
 
         .song-info {
@@ -290,21 +184,14 @@
         }
 
         .song-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #00ff88;
         }
 
         .song-artist {
             color: #00aa66;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .song-album {
-            color: #008844;
-            font-size: 12px;
-            margin-top: 3px;
+            font-size: 13px;
         }
 
         .song-actions {
@@ -312,61 +199,17 @@
             gap: 10px;
         }
 
-        .btn-play {
-            background: linear-gradient(135deg, #0a4d0a, #00aa44);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-play:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 255, 68, 0.5);
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #4a0a0a, #aa2200);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-delete:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 34, 0, 0.5);
-        }
-
         .btn-primary {
             background: linear-gradient(135deg, #0a4d0a, #00aa44);
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 12px 24px;
+            padding: 10px 20px;
             cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 255, 68, 0.3);
-        }
-
-        .preview-image {
-            margin-top: 10px;
-            max-width: 100px;
-        }
-
-        .preview-image img {
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
+        .btn-danger {
+            background: linear-gradient(135deg, #4a0a0a, #aa2200);
         }
 
         .toast {
@@ -381,7 +224,6 @@
             z-index: 1000;
             animation: slideIn 0.3s ease;
             border: 1px solid rgba(0, 255, 0, 0.3);
-            font-weight: 500;
         }
 
         @keyframes slideIn {
@@ -395,419 +237,236 @@
             }
         }
 
-        input[type="file"] {
-            color: #00aa66;
+        .preview-image {
+            margin-top: 10px;
         }
 
-        input[type="file"]::-webkit-file-upload-button {
-            background: linear-gradient(135deg, #0a4d0a, #00aa44);
-            border: none;
-            color: white;
-            padding: 8px 16px;
+        .preview-image img {
+            width: 80px;
             border-radius: 8px;
-            cursor: pointer;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 20, 0, 0.5);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #00aa44;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00ff88;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="loginContainer" class="login-container">
-            <h2>🔐 LiquidMusic Admin</h2>
-            <input type="password" id="passwordInput" placeholder="Введите пароль" onkeypress="if(event.key==='Enter') checkLogin()">
-            <button onclick="checkLogin()">Войти</button>
-        </div>
-
-        <div id="adminPanel" class="admin-panel">
-            <h1>🎵 LiquidMusic Admin Panel</h1>
-            
-            <!-- Мини-плеер -->
-            <div class="mini-player" id="miniPlayer">
-                <div id="playerContent">
-                    <div class="no-playing">🎵 Выберите песню для воспроизведения</div>
-                </div>
-            </div>
-
-            <div class="add-song-form">
-                <h3>
-                    <span>➕ Добавить новую песню</span>
-                    <div>
-                        <button class="btn-primary" style="padding: 8px 16px; font-size: 14px;" onclick="exportToJSON()">📤 Экспорт JSON</button>
-                        <button class="btn-primary" style="padding: 8px 16px; font-size: 14px; margin-left: 10px;" onclick="importFromJSON()">📥 Импорт JSON</button>
-                        <button class="btn-primary" style="padding: 8px 16px; font-size: 14px; margin-left: 10px;" onclick="clearAllSongs()">🗑 Очистить всё</button>
-                    </div>
-                </h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Название песни *</label>
-                        <input type="text" id="songTitle" placeholder="Введите название">
-                    </div>
-                    <div class="form-group">
-                        <label>Автор/Исполнитель *</label>
-                        <input type="text" id="songArtist" placeholder="Введите автора">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Альбом</label>
-                        <input type="text" id="songAlbum" placeholder="Введите альбом">
-                    </div>
-                    <div class="form-group">
-                        <label>Ссылка на MP3 файл *</label>
-                        <input type="text" id="songUrl" placeholder="https://raw.githubusercontent.com/...">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Ссылка на обложку</label>
-                    <input type="text" id="coverUrl" placeholder="https://example.com/cover.jpg">
-                    <div id="coverPreview" class="preview-image"></div>
-                </div>
-                <button class="btn-primary" onclick="addSong()">➕ Добавить песню</button>
-            </div>
-
-            <div class="songs-list">
-                <h3>📋 Список песен</h3>
-                <div id="songsList"></div>
-            </div>
-        </div>
+<div class="container">
+    <div id="loginContainer" class="login-container">
+        <h2>🔐 LiquidMusic Admin</h2>
+        <input type="password" id="passwordInput" placeholder="Введите пароль" onkeypress="if(event.key==='Enter') checkLogin()">
+        <button onclick="checkLogin()">Войти</button>
     </div>
 
-    <script>
-        const ADMIN_PASSWORD = "ilovegays";
-        let songs = [];
-        
-        // Плеер
-        let currentAudio = null;
-        let currentSongData = null;
-        let isPlaying = false;
-        let progressInterval = null;
-        
-        function updateMiniPlayer(song) {
-            const playerDiv = document.getElementById('playerContent');
-            if (!song) {
-                playerDiv.innerHTML = '<div class="no-playing">🎵 Выберите песню для воспроизведения</div>';
-                return;
-            }
-            
-            playerDiv.innerHTML = `
-                <img class="player-cover" src="${song.coverUrl || ''}" onerror="this.src=''" alt="Обложка">
-                <div class="player-info">
-                    <div class="player-title">${escapeHtml(song.title)}</div>
-                    <div class="player-artist">${escapeHtml(song.artist)}</div>
+    <div id="adminPanel" class="admin-panel">
+        <h1>🎵 LiquidMusic Admin Panel</h1>
+
+        <div class="add-song-form">
+            <h3>➕ Добавить новую песню</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Название песни *</label>
+                    <input type="text" id="songTitle" placeholder="Введите название">
                 </div>
-                <div class="player-controls">
-                    <button class="player-btn" onclick="previousSong()">⏮</button>
-                    <button class="player-btn" id="playPauseBtn" onclick="togglePlayPause()">⏸</button>
-                    <button class="player-btn" onclick="nextSong()">⏭</button>
+                <div class="form-group">
+                    <label>Автор/Исполнитель *</label>
+                    <input type="text" id="songArtist" placeholder="Введите автора">
                 </div>
-                <div class="player-progress">
-                    <div class="progress-bar" id="progressBar" onclick="seekTo(event)">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="time-info">
-                        <span id="currentTime">0:00</span>
-                        <span id="duration">0:00</span>
-                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Альбом</label>
+                    <input type="text" id="songAlbum" placeholder="Введите альбом">
                 </div>
-            `;
-            
-            // Обновляем иконку паузы/плея
-            const playPauseBtn = document.getElementById('playPauseBtn');
-            if (playPauseBtn) {
-                playPauseBtn.textContent = isPlaying ? '⏸' : '▶';
-            }
+                <div class="form-group">
+                    <label>Ссылка на MP3 файл *</label>
+                    <input type="text" id="songUrl" placeholder="https://raw.githubusercontent.com/...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Ссылка на обложку</label>
+                <input type="text" id="coverUrl" placeholder="https://...">
+                <div id="coverPreview" class="preview-image"></div>
+            </div>
+            <button class="btn-primary" onclick="addSong()">➕ Добавить песню</button>
+            <button class="btn-primary btn-danger" onclick="clearAllSongs()" style="margin-left: 10px;">🗑 Очистить всё</button>
+            <button class="btn-primary" onclick="exportToJSON()" style="margin-left: 10px;">📤 Экспорт JSON</button>
+        </div>
+
+        <div class="songs-list">
+            <h3>📋 Список песен</h3>
+            <div id="songsList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ADMIN_PASSWORD = "ilovegays";
+    let songs = [];
+
+    // === API ДЛЯ ПРИЛОЖЕНИЯ ===
+    // Если открыть страницу с ?api=songs - отдаст JSON
+    if (window.location.search === '?api=songs') {
+        const saved = localStorage.getItem('liquidMusicSongs');
+        if (saved) {
+            const songsList = JSON.parse(saved);
+            const apiData = songsList.map(s => ({
+                id: s.id,
+                title: s.title,
+                artist: s.artist,
+                album: s.album,
+                mp3Url: s.mp3Url,
+                coverUrl: s.coverUrl
+            }));
+            document.body.innerHTML = JSON.stringify(apiData, null, 2);
+        } else {
+            document.body.innerHTML = '[]';
         }
-        
-        function playSongFromPlayer(song) {
-            if (currentAudio) {
-                currentAudio.pause();
-                if (progressInterval) clearInterval(progressInterval);
-            }
-            
-            currentSongData = song;
-            currentAudio = new Audio(song.mp3Url);
-            
-            currentAudio.addEventListener('loadedmetadata', () => {
-                updateMiniPlayer(currentSongData);
-                const duration = document.getElementById('duration');
-                if (duration) duration.textContent = formatTime(currentAudio.duration);
-            });
-            
-            currentAudio.addEventListener('timeupdate', () => {
-                const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
-                const progressFill = document.getElementById('progressFill');
-                const currentTimeSpan = document.getElementById('currentTime');
-                if (progressFill) progressFill.style.width = `${progress}%`;
-                if (currentTimeSpan) currentTimeSpan.textContent = formatTime(currentAudio.currentTime);
-            });
-            
-            currentAudio.addEventListener('ended', () => {
-                nextSong();
-            });
-            
-            currentAudio.play();
-            isPlaying = true;
-            updateMiniPlayer(currentSongData);
-            showToast(`🎵 Играет: ${song.title} - ${song.artist}`);
+        // Останавливаем выполнение, чтобы не показывать админку
+        throw new Error("API mode");
+    }
+
+    function checkLogin() {
+        const password = document.getElementById('passwordInput').value;
+        if (password === ADMIN_PASSWORD) {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadSongs();
+            showToast('🌿 Вход выполнен успешно!');
+        } else {
+            alert('❌ Неверный пароль!');
         }
-        
-        function togglePlayPause() {
-            if (!currentAudio || !currentSongData) {
-                if (songs.length > 0) {
-                    playSongFromPlayer(songs[0]);
-                }
-                return;
-            }
-            
-            if (isPlaying) {
-                currentAudio.pause();
-                isPlaying = false;
-            } else {
-                currentAudio.play();
-                isPlaying = true;
-            }
-            updateMiniPlayer(currentSongData);
+    }
+
+    function loadSongs() {
+        const saved = localStorage.getItem('liquidMusicSongs');
+        if (saved) songs = JSON.parse(saved);
+        renderSongsList();
+    }
+
+    function saveSongs() {
+        localStorage.setItem('liquidMusicSongs', JSON.stringify(songs));
+    }
+
+    function previewCoverFromUrl() {
+        const coverUrl = document.getElementById('coverUrl').value;
+        const preview = document.getElementById('coverPreview');
+        preview.innerHTML = '';
+        if (coverUrl) {
+            const img = document.createElement('img');
+            img.src = coverUrl;
+            img.onerror = () => { preview.innerHTML = '<span style="color:#00aa66;">❌ Не удалось загрузить</span>'; };
+            preview.appendChild(img);
         }
-        
-        function nextSong() {
-            if (!currentSongData || songs.length === 0) return;
-            const currentIndex = songs.findIndex(s => s.id === currentSongData.id);
-            const nextIndex = (currentIndex + 1) % songs.length;
-            playSongFromPlayer(songs[nextIndex]);
+    }
+
+    document.getElementById('coverUrl').addEventListener('input', previewCoverFromUrl);
+
+    function addSong() {
+        const title = document.getElementById('songTitle').value.trim();
+        const artist = document.getElementById('songArtist').value.trim();
+        const album = document.getElementById('songAlbum').value.trim();
+        const mp3Url = document.getElementById('songUrl').value.trim();
+        const coverUrl = document.getElementById('coverUrl').value.trim();
+
+        if (!title || !artist || !mp3Url) {
+            alert('❌ Заполните обязательные поля!');
+            return;
         }
-        
-        function previousSong() {
-            if (!currentSongData || songs.length === 0) return;
-            const currentIndex = songs.findIndex(s => s.id === currentSongData.id);
-            const prevIndex = (currentIndex - 1 + songs.length) % songs.length;
-            playSongFromPlayer(songs[prevIndex]);
-        }
-        
-        function seekTo(event) {
-            if (!currentAudio) return;
-            const rect = event.currentTarget.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const percent = x / rect.width;
-            currentAudio.currentTime = percent * currentAudio.duration;
-        }
-        
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return "0:00";
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        function checkLogin() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                loadSongs();
-                showToast('🌿 Вход выполнен успешно!');
-            } else {
-                alert('❌ Неверный пароль!');
-            }
-        }
-        
-        function loadSongs() {
-            const saved = localStorage.getItem('liquidMusicSongs');
-            if (saved) {
-                songs = JSON.parse(saved);
-            }
-            renderSongsList();
-        }
-        
-        function saveSongs() {
-            localStorage.setItem('liquidMusicSongs', JSON.stringify(songs));
-        }
-        
-        function previewCoverFromUrl() {
-            const coverUrl = document.getElementById('coverUrl').value;
-            const preview = document.getElementById('coverPreview');
-            preview.innerHTML = '';
-            if (coverUrl) {
-                const img = document.createElement('img');
-                img.src = coverUrl;
-                img.style.width = '100px';
-                img.style.borderRadius = '8px';
-                img.onerror = () => {
-                    preview.innerHTML = '<span style="color:#00aa66;">❌ Не удалось загрузить изображение</span>';
-                };
-                preview.appendChild(img);
-            }
-        }
-        
-        document.getElementById('coverUrl').addEventListener('input', previewCoverFromUrl);
-        
-        function addSong() {
-            const title = document.getElementById('songTitle').value.trim();
-            const artist = document.getElementById('songArtist').value.trim();
-            const album = document.getElementById('songAlbum').value.trim();
-            const mp3Url = document.getElementById('songUrl').value.trim();
-            const coverUrl = document.getElementById('coverUrl').value.trim();
-            
-            if (!title || !artist || !mp3Url) {
-                alert('❌ Заполните обязательные поля: Название, Автор и ссылку на MP3 файл!');
-                return;
-            }
-            
-            const song = {
-                id: Date.now(),
-                title: title,
-                artist: artist,
-                album: album || 'Без альбома',
-                mp3Url: mp3Url,
-                coverUrl: coverUrl || null,
-                added: new Date().toISOString()
-            };
-            
-            songs.unshift(song);
+
+        const song = {
+            id: Date.now(),
+            title: title,
+            artist: artist,
+            album: album || 'Без альбома',
+            mp3Url: mp3Url,
+            coverUrl: coverUrl || null,
+            added: new Date().toISOString()
+        };
+
+        songs.unshift(song);
+        saveSongs();
+        renderSongsList();
+        clearForm();
+        showToast('✅ Песня добавлена!');
+    }
+
+    function clearForm() {
+        document.getElementById('songTitle').value = '';
+        document.getElementById('songArtist').value = '';
+        document.getElementById('songAlbum').value = '';
+        document.getElementById('songUrl').value = '';
+        document.getElementById('coverUrl').value = '';
+        document.getElementById('coverPreview').innerHTML = '';
+    }
+
+    function deleteSong(id) {
+        if (confirm('🗑 Удалить эту песню?')) {
+            songs = songs.filter(s => s.id !== id);
             saveSongs();
             renderSongsList();
-            clearForm();
-            showToast('✅ Песня добавлена!');
+            showToast('🗑 Песня удалена');
         }
-        
-        function clearForm() {
-            document.getElementById('songTitle').value = '';
-            document.getElementById('songArtist').value = '';
-            document.getElementById('songAlbum').value = '';
-            document.getElementById('songUrl').value = '';
-            document.getElementById('coverUrl').value = '';
-            document.getElementById('coverPreview').innerHTML = '';
+    }
+
+    function clearAllSongs() {
+        if (confirm('⚠️ Удалить ВСЕ песни?')) {
+            songs = [];
+            saveSongs();
+            renderSongsList();
+            showToast('🗑 Все песни удалены');
         }
-        
-        function deleteSong(id) {
-            if (confirm('🗑 Удалить эту песню?')) {
-                songs = songs.filter(song => song.id !== id);
-                saveSongs();
-                renderSongsList();
-                if (currentSongData && currentSongData.id === id) {
-                    if (currentAudio) currentAudio.pause();
-                    currentSongData = null;
-                    currentAudio = null;
-                    isPlaying = false;
-                    updateMiniPlayer(null);
-                }
-                showToast('🗑 Песня удалена');
-            }
+    }
+
+    function renderSongsList() {
+        const container = document.getElementById('songsList');
+        if (songs.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#008844;">🌿 Нет добавленных песен</p>';
+            return;
         }
-        
-        function clearAllSongs() {
-            if (confirm('⚠️ ВНИМАНИЕ! Это удалит ВСЕ песни. Вы уверены?')) {
-                songs = [];
-                saveSongs();
-                renderSongsList();
-                if (currentAudio) currentAudio.pause();
-                currentSongData = null;
-                currentAudio = null;
-                isPlaying = false;
-                updateMiniPlayer(null);
-                showToast('🗑 Все песни удалены');
-            }
-        }
-        
-        function renderSongsList() {
-            const container = document.getElementById('songsList');
-            if (songs.length === 0) {
-                container.innerHTML = '<p style="text-align:center;color:#008844;">🌿 Нет добавленных песен</p>';
-                return;
-            }
-            
-            container.innerHTML = songs.map(song => `
-                <div class="song-item">
-                    ${song.coverUrl ? `<img class="song-cover" src="${song.coverUrl}" alt="Обложка" onerror="this.src=''">` : '<div class="song-cover" style="background: linear-gradient(135deg, #0a3a0a, #0a1a0a); display: flex; align-items: center; justify-content: center; color: #00ff88; font-size: 32px;">🎵</div>'}
-                    <div class="song-info">
-                        <div class="song-title">${escapeHtml(song.title)}</div>
-                        <div class="song-artist">🎤 ${escapeHtml(song.artist)}</div>
-                        <div class="song-album">💿 ${escapeHtml(song.album)}</div>
-                        <div class="song-album" style="font-size: 10px; color: #006633;">🕐 ${new Date(song.added).toLocaleDateString()}</div>
-                    </div>
-                    <div class="song-actions">
-                        <button class="btn-play" onclick="playSongFromPlayer(songs.find(s => s.id === ${song.id}))">▶ Воспроизвести</button>
-                        <button class="btn-delete" onclick="deleteSong(${song.id})">🗑 Удалить</button>
-                    </div>
+
+        container.innerHTML = songs.map(song => `
+            <div class="song-item">
+                ${song.coverUrl ? `<img class="song-cover" src="${song.coverUrl}" onerror="this.style.display='none'">` : '<div style="width:60px; height:60px; background:#0a3a0a; border-radius:10px; display:flex;align-items:center;justify-content:center;">🎵</div>'}
+                <div class="song-info">
+                    <div class="song-title">${escapeHtml(song.title)}</div>
+                    <div class="song-artist">${escapeHtml(song.artist)}</div>
+                    <div class="song-artist" style="font-size:10px;">💿 ${escapeHtml(song.album)}</div>
                 </div>
-            `).join('');
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-        
-        function exportToJSON() {
-            const exportData = songs.map(song => ({
-                id: song.id,
-                title: song.title,
-                artist: song.artist,
-                album: song.album,
-                mp3Url: song.mp3Url,
-                coverUrl: song.coverUrl,
-                added: song.added
-            }));
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const blob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'songs_export.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('📄 Экспорт завершен!');
-        }
-        
-        function importFromJSON() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    try {
-                        const imported = JSON.parse(evt.target.result);
-                        if (Array.isArray(imported)) {
-                            songs = [...imported, ...songs];
-                            saveSongs();
-                            renderSongsList();
-                            showToast('📥 Импорт выполнен успешно!');
-                        }
-                    } catch (err) {
-                        alert('❌ Ошибка импорта');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-    </script>
+                <div class="song-actions">
+                    <button class="btn-primary" onclick="playSongInBrowser('${song.mp3Url}', '${escapeHtml(song.title)}')">▶</button>
+                    <button class="btn-primary btn-danger" onclick="deleteSong(${song.id})">🗑</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function playSongInBrowser(url, title) {
+        const audio = new Audio(url);
+        audio.play();
+        showToast(`🎵 Играет: ${title}`);
+    }
+
+    function exportToJSON() {
+        const data = songs.map(s => ({ id: s.id, title: s.title, artist: s.artist, album: s.album, mp3Url: s.mp3Url, coverUrl: s.coverUrl }));
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'songs_export.json';
+        a.click();
+        showToast('📄 Экспорт завершен!');
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+</script>
 </body>
 </html>
