@@ -94,6 +94,106 @@
             font-size: 28px;
         }
 
+        /* Мини-плеер */
+        .mini-player {
+            background: rgba(0, 20, 0, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .player-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #0a3a0a, #0a1a0a);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .player-info {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .player-title {
+            font-weight: 600;
+            color: #00ff88;
+            font-size: 14px;
+        }
+
+        .player-artist {
+            color: #00aa66;
+            font-size: 12px;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .player-btn {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 255, 68, 0.5);
+        }
+
+        .player-progress {
+            flex: 2;
+            min-width: 200px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 255, 68, 0.2);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00aa44, #00ff88);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 10px;
+            color: #00aa66;
+        }
+
+        .no-playing {
+            color: #008844;
+            text-align: center;
+            width: 100%;
+        }
+
         .add-song-form {
             background: rgba(0, 20, 0, 0.6);
             border-radius: 15px;
@@ -338,6 +438,13 @@
         <div id="adminPanel" class="admin-panel">
             <h1>🎵 LiquidMusic Admin Panel</h1>
             
+            <!-- Мини-плеер -->
+            <div class="mini-player" id="miniPlayer">
+                <div id="playerContent">
+                    <div class="no-playing">🎵 Выберите песню для воспроизведения</div>
+                </div>
+            </div>
+
             <div class="add-song-form">
                 <h3>
                     <span>➕ Добавить новую песню</span>
@@ -364,7 +471,7 @@
                     </div>
                     <div class="form-group">
                         <label>Ссылка на MP3 файл *</label>
-                        <input type="text" id="songUrl" placeholder="https://example.com/song.mp3">
+                        <input type="text" id="songUrl" placeholder="https://raw.githubusercontent.com/...">
                     </div>
                 </div>
                 <div class="form-group">
@@ -383,8 +490,130 @@
     </div>
 
     <script>
-        const ADMIN_PASSWORD = "admin123";
+        const ADMIN_PASSWORD = "ilovegays";
         let songs = [];
+        
+        // Плеер
+        let currentAudio = null;
+        let currentSongData = null;
+        let isPlaying = false;
+        let progressInterval = null;
+        
+        function updateMiniPlayer(song) {
+            const playerDiv = document.getElementById('playerContent');
+            if (!song) {
+                playerDiv.innerHTML = '<div class="no-playing">🎵 Выберите песню для воспроизведения</div>';
+                return;
+            }
+            
+            playerDiv.innerHTML = `
+                <img class="player-cover" src="${song.coverUrl || ''}" onerror="this.src=''" alt="Обложка">
+                <div class="player-info">
+                    <div class="player-title">${escapeHtml(song.title)}</div>
+                    <div class="player-artist">${escapeHtml(song.artist)}</div>
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn" onclick="previousSong()">⏮</button>
+                    <button class="player-btn" id="playPauseBtn" onclick="togglePlayPause()">⏸</button>
+                    <button class="player-btn" onclick="nextSong()">⏭</button>
+                </div>
+                <div class="player-progress">
+                    <div class="progress-bar" id="progressBar" onclick="seekTo(event)">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+            `;
+            
+            // Обновляем иконку паузы/плея
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            if (playPauseBtn) {
+                playPauseBtn.textContent = isPlaying ? '⏸' : '▶';
+            }
+        }
+        
+        function playSongFromPlayer(song) {
+            if (currentAudio) {
+                currentAudio.pause();
+                if (progressInterval) clearInterval(progressInterval);
+            }
+            
+            currentSongData = song;
+            currentAudio = new Audio(song.mp3Url);
+            
+            currentAudio.addEventListener('loadedmetadata', () => {
+                updateMiniPlayer(currentSongData);
+                const duration = document.getElementById('duration');
+                if (duration) duration.textContent = formatTime(currentAudio.duration);
+            });
+            
+            currentAudio.addEventListener('timeupdate', () => {
+                const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+                const progressFill = document.getElementById('progressFill');
+                const currentTimeSpan = document.getElementById('currentTime');
+                if (progressFill) progressFill.style.width = `${progress}%`;
+                if (currentTimeSpan) currentTimeSpan.textContent = formatTime(currentAudio.currentTime);
+            });
+            
+            currentAudio.addEventListener('ended', () => {
+                nextSong();
+            });
+            
+            currentAudio.play();
+            isPlaying = true;
+            updateMiniPlayer(currentSongData);
+            showToast(`🎵 Играет: ${song.title} - ${song.artist}`);
+        }
+        
+        function togglePlayPause() {
+            if (!currentAudio || !currentSongData) {
+                if (songs.length > 0) {
+                    playSongFromPlayer(songs[0]);
+                }
+                return;
+            }
+            
+            if (isPlaying) {
+                currentAudio.pause();
+                isPlaying = false;
+            } else {
+                currentAudio.play();
+                isPlaying = true;
+            }
+            updateMiniPlayer(currentSongData);
+        }
+        
+        function nextSong() {
+            if (!currentSongData || songs.length === 0) return;
+            const currentIndex = songs.findIndex(s => s.id === currentSongData.id);
+            const nextIndex = (currentIndex + 1) % songs.length;
+            playSongFromPlayer(songs[nextIndex]);
+        }
+        
+        function previousSong() {
+            if (!currentSongData || songs.length === 0) return;
+            const currentIndex = songs.findIndex(s => s.id === currentSongData.id);
+            const prevIndex = (currentIndex - 1 + songs.length) % songs.length;
+            playSongFromPlayer(songs[prevIndex]);
+        }
+        
+        function seekTo(event) {
+            if (!currentAudio) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percent = x / rect.width;
+            currentAudio.currentTime = percent * currentAudio.duration;
+        }
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
         
         function checkLogin() {
             const password = document.getElementById('passwordInput').value;
@@ -471,6 +700,13 @@
                 songs = songs.filter(song => song.id !== id);
                 saveSongs();
                 renderSongsList();
+                if (currentSongData && currentSongData.id === id) {
+                    if (currentAudio) currentAudio.pause();
+                    currentSongData = null;
+                    currentAudio = null;
+                    isPlaying = false;
+                    updateMiniPlayer(null);
+                }
                 showToast('🗑 Песня удалена');
             }
         }
@@ -480,18 +716,13 @@
                 songs = [];
                 saveSongs();
                 renderSongsList();
+                if (currentAudio) currentAudio.pause();
+                currentSongData = null;
+                currentAudio = null;
+                isPlaying = false;
+                updateMiniPlayer(null);
                 showToast('🗑 Все песни удалены');
             }
-        }
-        
-        let currentAudio = null;
-        function playSong(url, title, artist) {
-            if (currentAudio) {
-                currentAudio.pause();
-            }
-            currentAudio = new Audio(url);
-            currentAudio.play();
-            showToast(`🎵 Играет: ${title} - ${artist}`);
         }
         
         function renderSongsList() {
@@ -511,7 +742,7 @@
                         <div class="song-album" style="font-size: 10px; color: #006633;">🕐 ${new Date(song.added).toLocaleDateString()}</div>
                     </div>
                     <div class="song-actions">
-                        <button class="btn-play" onclick="playSong('${song.mp3Url}', '${escapeHtml(song.title)}', '${escapeHtml(song.artist)}')">▶ Воспроизвести</button>
+                        <button class="btn-play" onclick="playSongFromPlayer(songs.find(s => s.id === ${song.id}))">▶ Воспроизвести</button>
                         <button class="btn-delete" onclick="deleteSong(${song.id})">🗑 Удалить</button>
                     </div>
                 </div>
