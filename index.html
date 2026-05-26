@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiquidMusic Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0f0a 0%, #0a2e0a 25%, #0a1a0a 50%, #0d2e0d 75%, #0a0f0a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Форма входа */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: rgba(10, 20, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+            font-size: 16px;
+            color: #00ff88;
+        }
+
+        .login-container input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0a4d0a 0%, #00aa44 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 68, 0.3);
+        }
+
+        /* Основной интерфейс */
+        .admin-panel {
+            display: none;
+            background: rgba(10, 20, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            font-size: 28px;
+        }
+
+        /* Форма добавления */
+        .add-song-form {
+            background: rgba(0, 20, 0, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .add-song-form h3 {
+            margin-bottom: 20px;
+            color: #00ff88;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #00aa66;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            font-size: 14px;
+            color: #00ff88;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(0, 255, 136, 0.5);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Список песен */
+        .songs-list {
+            margin-top: 30px;
+        }
+
+        .songs-list h3 {
+            color: #00ff88;
+            margin-bottom: 20px;
+        }
+
+        .song-item {
+            background: rgba(0, 20, 0, 0.6);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .song-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 68, 0.2);
+            border-color: rgba(0, 255, 0, 0.4);
+        }
+
+        .song-cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #0a3a0a, #0a1a0a);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .song-info {
+            flex: 1;
+        }
+
+        .song-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00ff88;
+        }
+
+        .song-artist {
+            color: #00aa66;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .song-album {
+            color: #008844;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .song-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 68, 0.5);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #4a0a0a, #aa2200);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 34, 0, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 68, 0.3);
+        }
+
+        .preview-image {
+            margin-top: 10px;
+            max-width: 100px;
+        }
+
+        .preview-image img {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        /* Уведомления */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 30, 0, 0.95);
+            backdrop-filter: blur(10px);
+            color: #00ff88;
+            padding: 12px 24px;
+            border-radius: 10px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            font-weight: 500;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Скрытие файлового инпута */
+        input[type="file"] {
+            color: #00aa66;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Полоса прокрутки */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 20, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00aa44;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Форма входа -->
+        <div id="loginContainer" class="login-container">
+            <h2>🔐 LiquidMusic Admin</h2>
+            <input type="password" id="passwordInput" placeholder="Введите пароль" onkeypress="if(event.key==='Enter') checkLogin()">
+            <button onclick="checkLogin()">Войти</button>
+        </div>
+
+        <!-- Админ панель -->
+        <div id="adminPanel" class="admin-panel">
+            <h1>🎵 LiquidMusic Admin Panel</h1>
+            
+            <!-- Форма добавления песни -->
+            <div class="add-song-form">
+                <h3>
+                    <span>➕ Добавить новую песню</span>
+                    <div>
+                        <button class="btn-primary" style="padding: 8px 16px; font-size: 14px;" onclick="exportToJSON()">📤 Экспорт JSON</button>
+                        <button class="btn-primary" style="padding: 8px 16px; font-size: 14px; margin-left: 10px;" onclick="importFromJSON()">📥 Импорт JSON</button>
+                    </div>
+                </h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Название песни *</label>
+                        <input type="text" id="songTitle" placeholder="Введите название">
+                    </div>
+                    <div class="form-group">
+                        <label>Автор/Исполнитель *</label>
+                        <input type="text" id="songArtist" placeholder="Введите автора">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Альбом</label>
+                        <input type="text" id="songAlbum" placeholder="Введите альбом">
+                    </div>
+                    <div class="form-group">
+                        <label>MP3 файл *</label>
+                        <input type="file" id="mp3File" accept=".mp3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Обложка песни</label>
+                    <input type="file" id="coverFile" accept="image/*" onchange="previewCover(this)">
+                    <div id="coverPreview" class="preview-image"></div>
+                </div>
+                <button class="btn-primary" onclick="addSong()">➕ Добавить песню</button>
+            </div>
+
+            <!-- Список песен -->
+            <div class="songs-list">
+                <h3>📋 Список песен</h3>
+                <div id="songsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Пароль для входа (можно изменить)
+        const ADMIN_PASSWORD = "ROBLOX6767";
+        
+        // Хранилище песен (в localStorage)
+        let songs = [];
+        
+        // Проверка входа
+        function checkLogin() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadSongs();
+                showToast('🌿 Вход выполнен успешно!');
+            } else {
+                alert('❌ Неверный пароль!');
+            }
+        }
+        
+        // Загрузка песен из localStorage
+        function loadSongs() {
+            const saved = localStorage.getItem('liquidMusicSongs');
+            if (saved) {
+                songs = JSON.parse(saved);
+            }
+            renderSongsList();
+        }
+        
+        // Сохранение песен в localStorage
+        function saveSongs() {
+            localStorage.setItem('liquidMusicSongs', JSON.stringify(songs));
+        }
+        
+        // Предпросмотр обложки
+        function previewCover(input) {
+            const preview = document.getElementById('coverPreview');
+            preview.innerHTML = '';
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100px';
+                    img.style.borderRadius = '8px';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        // Добавление песни
+        function addSong() {
+            const title = document.getElementById('songTitle').value.trim();
+            const artist = document.getElementById('songArtist').value.trim();
+            const album = document.getElementById('songAlbum').value.trim();
+            const mp3File = document.getElementById('mp3File').files[0];
+            
+            if (!title || !artist || !mp3File) {
+                alert('❌ Заполните обязательные поля: Название, Автор и MP3 файл!');
+                return;
+            }
+            
+            // Читаем MP3 файл
+            const mp3Reader = new FileReader();
+            mp3Reader.onload = function(e) {
+                const mp3Data = e.target.result;
+                
+                // Читаем обложку если есть
+                const coverFile = document.getElementById('coverFile').files[0];
+                if (coverFile) {
+                    const coverReader = new FileReader();
+                    coverReader.onload = function(coverEvent) {
+                        const song = {
+                            id: Date.now(),
+                            title: title,
+                            artist: artist,
+                            album: album || 'Без альбома',
+                            mp3: mp3Data,
+                            cover: coverEvent.target.result,
+                            added: new Date().toISOString()
+                        };
+                        songs.unshift(song);
+                        saveSongs();
+                        renderSongsList();
+                        clearForm();
+                        showToast('✅ Песня добавлена!');
+                    };
+                    coverReader.readAsDataURL(coverFile);
+                } else {
+                    const song = {
+                        id: Date.now(),
+                        title: title,
+                        artist: artist,
+                        album: album || 'Без альбома',
+                        mp3: mp3Data,
+                        cover: null,
+                        added: new Date().toISOString()
+                    };
+                    songs.unshift(song);
+                    saveSongs();
+                    renderSongsList();
+                    clearForm();
+                    showToast('✅ Песня добавлена!');
+                }
+            };
+            mp3Reader.readAsDataURL(mp3File);
+        }
+        
+        // Очистка формы
+        function clearForm() {
+            document.getElementById('songTitle').value = '';
+            document.getElementById('songArtist').value = '';
+            document.getElementById('songAlbum').value = '';
+            document.getElementById('mp3File').value = '';
+            document.getElementById('coverFile').value = '';
+            document.getElementById('coverPreview').innerHTML = '';
+        }
+        
+        // Удаление песни
+        function deleteSong(id) {
+            if (confirm('🗑 Удалить эту песню?')) {
+                songs = songs.filter(song => song.id !== id);
+                saveSongs();
+                renderSongsList();
+                showToast('🗑 Песня удалена');
+            }
+        }
+        
+        // Воспроизведение песни
+        let currentAudio = null;
+        function playSong(id) {
+            const song = songs.find(s => s.id === id);
+            if (song && song.mp3) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                }
+                currentAudio = new Audio(song.mp3);
+                currentAudio.play();
+                showToast(`🎵 Играет: ${song.title} - ${song.artist}`);
+            }
+        }
+        
+        // Отображение списка песен
+        function renderSongsList() {
+            const container = document.getElementById('songsList');
+            if (songs.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#008844;">🌿 Нет добавленных песен</p>';
+                return;
+            }
+            
+            container.innerHTML = songs.map(song => `
+                <div class="song-item">
+                    ${song.cover ? `<img class="song-cover" src="${song.cover}" alt="Обложка">` : '<div class="song-cover" style="background: linear-gradient(135deg, #0a3a0a, #0a1a0a); display: flex; align-items: center; justify-content: center; color: #00ff88; font-size: 32px;">🎵</div>'}
+                    <div class="song-info">
+                        <div class="song-title">${escapeHtml(song.title)}</div>
+                        <div class="song-artist">🎤 ${escapeHtml(song.artist)}</div>
+                        <div class="song-album">💿 ${escapeHtml(song.album)}</div>
+                        <div class="song-album" style="font-size: 10px; color: #006633;">🕐 ${new Date(song.added).toLocaleDateString()}</div>
+                    </div>
+                    <div class="song-actions">
+                        <button class="btn-play" onclick="playSong(${song.id})">▶ Воспроизвести</button>
+                        <button class="btn-delete" onclick="deleteSong(${song.id})">🗑 Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Экранирование HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Уведомление
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Экспорт в JSON
+        function exportToJSON() {
+            const exportData = songs.map(song => ({
+                id: song.id,
+                title: song.title,
+                artist: song.artist,
+                album: song.album,
+                cover: song.cover,
+                added: song.added
+            }));
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'songs_export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📄 Экспорт завершен!');
+        }
+        
+        // Импорт из JSON
+        function importFromJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const imported = JSON.parse(evt.target.result);
+                        if (Array.isArray(imported)) {
+                            songs = [...imported, ...songs];
+                            saveSongs();
+                            renderSongsList();
+                            showToast('📥 Импорт выполнен успешно!');
+                        }
+                    } catch (err) {
+                        alert('❌ Ошибка импорта');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+    </script>
+</body>
+</html>
