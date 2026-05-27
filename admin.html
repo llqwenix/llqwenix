@@ -338,19 +338,6 @@
             }
         }
 
-        input[type="file"] {
-            color: #00aa66;
-        }
-
-        input[type="file"]::-webkit-file-upload-button {
-            background: linear-gradient(135deg, #0a4d0a, #00aa44);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -369,10 +356,34 @@
             background: #00ff88;
         }
 
-        /* Стили для активного плеера */
         .now-playing {
-            background: rgba(0, 50, 0, 0.8);
+            background: rgba(0, 80, 0, 0.8);
             border-color: #00ff88;
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .url-input-group input {
+            flex: 1;
+        }
+
+        .test-url-btn {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .test-url-btn:hover {
+            transform: scale(1.02);
         }
     </style>
 </head>
@@ -412,13 +423,16 @@
                         <input type="text" id="songAlbum" placeholder="Введите альбом">
                     </div>
                     <div class="form-group">
-                        <label>MP3 файл *</label>
-                        <input type="file" id="mp3File" accept=".mp3">
+                        <label>Ссылка на MP3 файл *</label>
+                        <div class="url-input-group">
+                            <input type="text" id="mp3Url" placeholder="https://raw.githubusercontent.com/... .mp3">
+                            <button type="button" class="test-url-btn" onclick="testMp3Url()">🔊 Тест</button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Обложка песни</label>
-                    <input type="file" id="coverFile" accept="image/*" onchange="previewCover(this)">
+                    <label>Ссылка на обложку</label>
+                    <input type="text" id="coverUrl" placeholder="https://...">
                     <div id="coverPreview" class="preview-image"></div>
                 </div>
                 <button class="btn-primary" onclick="addSong()">➕ Добавить песню</button>
@@ -436,6 +450,7 @@
         let songs = [];
         let currentAudio = null;
         let currentPlayingId = null;
+        let testAudio = null;
         
         function checkLogin() {
             const password = document.getElementById('passwordInput').value;
@@ -457,6 +472,30 @@
             setTimeout(() => toast.remove(), 3000);
         }
         
+        function testMp3Url() {
+            const url = document.getElementById('mp3Url').value.trim();
+            if (!url) {
+                showToast('❌ Введите ссылку на MP3 файл');
+                return;
+            }
+            
+            if (testAudio) {
+                testAudio.pause();
+            }
+            
+            testAudio = new Audio(url);
+            testAudio.oncanplay = function() {
+                showToast('✅ Ссылка работает! Файл доступен');
+                testAudio.play().catch(e => {
+                    showToast('⚠️ Файл доступен, но автовоспроизведение заблокировано');
+                });
+            };
+            testAudio.onerror = function() {
+                showToast('❌ Ошибка: файл не найден или ссылка недействительна');
+            };
+            testAudio.load();
+        }
+        
         function loadSongs() {
             const saved = localStorage.getItem('liquidMusicSongs');
             if (saved) {
@@ -469,83 +508,55 @@
             localStorage.setItem('liquidMusicSongs', JSON.stringify(songs));
         }
         
-        function previewCover(input) {
+        function previewCoverFromUrl() {
+            const coverUrl = document.getElementById('coverUrl').value;
             const preview = document.getElementById('coverPreview');
             preview.innerHTML = '';
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '100px';
-                    img.style.borderRadius = '8px';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(input.files[0]);
+            if (coverUrl) {
+                const img = document.createElement('img');
+                img.src = coverUrl;
+                img.onerror = () => { preview.innerHTML = '<span style="color:#00aa66;">❌ Не удалось загрузить</span>'; };
+                preview.appendChild(img);
             }
         }
+        
+        document.getElementById('coverUrl').addEventListener('input', previewCoverFromUrl);
         
         function addSong() {
             const title = document.getElementById('songTitle').value.trim();
             const artist = document.getElementById('songArtist').value.trim();
             const album = document.getElementById('songAlbum').value.trim();
-            const mp3File = document.getElementById('mp3File').files[0];
+            const mp3Url = document.getElementById('mp3Url').value.trim();
+            const coverUrl = document.getElementById('coverUrl').value.trim();
             
-            if (!title || !artist || !mp3File) {
-                alert('❌ Заполните обязательные поля!');
+            if (!title || !artist || !mp3Url) {
+                alert('❌ Заполните обязательные поля: Название, Автор и ссылку на MP3!');
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const mp3Data = e.target.result;
-                const coverFile = document.getElementById('coverFile').files[0];
-                
-                if (coverFile) {
-                    const coverReader = new FileReader();
-                    coverReader.onload = function(coverEvent) {
-                        const song = {
-                            id: Date.now(),
-                            title: title,
-                            artist: artist,
-                            album: album || 'Без альбома',
-                            mp3: mp3Data,
-                            cover: coverEvent.target.result,
-                            added: new Date().toISOString()
-                        };
-                        songs.unshift(song);
-                        saveSongs();
-                        renderSongsList();
-                        clearForm();
-                        showToast('✅ Песня добавлена!');
-                    };
-                    coverReader.readAsDataURL(coverFile);
-                } else {
-                    const song = {
-                        id: Date.now(),
-                        title: title,
-                        artist: artist,
-                        album: album || 'Без альбома',
-                        mp3: mp3Data,
-                        cover: null,
-                        added: new Date().toISOString()
-                    };
-                    songs.unshift(song);
-                    saveSongs();
-                    renderSongsList();
-                    clearForm();
-                    showToast('✅ Песня добавлена!');
-                }
+            const song = {
+                id: Date.now(),
+                title: title,
+                artist: artist,
+                album: album || 'Без альбома',
+                mp3Url: mp3Url,
+                coverUrl: coverUrl || null,
+                added: new Date().toISOString()
             };
-            reader.readAsDataURL(mp3File);
+            
+            songs.unshift(song);
+            saveSongs();
+            renderSongsList();
+            clearForm();
+            showToast('✅ Песня добавлена!');
         }
         
         function clearForm() {
             document.getElementById('songTitle').value = '';
             document.getElementById('songArtist').value = '';
             document.getElementById('songAlbum').value = '';
-            document.getElementById('mp3File').value = '';
-            document.getElementById('coverFile').value = '';
+            document.getElementById('mp3Url').value = '';
+            document.getElementById('coverUrl').value = '';
             document.getElementById('coverPreview').innerHTML = '';
         }
         
@@ -578,8 +589,8 @@
         
         function playSong(id) {
             const song = songs.find(s => s.id === id);
-            if (!song || !song.mp3) {
-                showToast('❌ Ошибка: файл не найден');
+            if (!song || !song.mp3Url) {
+                showToast('❌ Ошибка: ссылка на файл не найдена');
                 return;
             }
             
@@ -589,25 +600,27 @@
                     currentAudio = null;
                 }
                 
-                // Создаём аудио из base64
-                const audio = new Audio(song.mp3);
+                const audio = new Audio(song.mp3Url);
                 
                 audio.onended = function() {
                     currentAudio = null;
                     currentPlayingId = null;
+                    renderSongsList();
                     showToast('⏹ Воспроизведение завершено');
                 };
                 
                 audio.onerror = function(e) {
                     console.error('Audio error:', e);
-                    showToast('❌ Ошибка воспроизведения');
+                    showToast('❌ Ошибка воспроизведения. Проверьте ссылку на файл');
                     currentAudio = null;
                     currentPlayingId = null;
+                    renderSongsList();
                 };
                 
                 audio.play().then(() => {
                     currentAudio = audio;
                     currentPlayingId = id;
+                    renderSongsList();
                     showToast(`🎵 Играет: ${song.title} - ${song.artist}`);
                 }).catch(error => {
                     console.error('Play error:', error);
@@ -625,6 +638,7 @@
                 currentAudio.pause();
                 currentAudio = null;
                 currentPlayingId = null;
+                renderSongsList();
                 showToast('⏹ Воспроизведение остановлено');
             }
         }
@@ -638,7 +652,7 @@
             
             container.innerHTML = songs.map(song => `
                 <div class="song-item ${currentPlayingId === song.id ? 'now-playing' : ''}">
-                    ${song.cover ? `<img class="song-cover" src="${song.cover}" alt="Обложка">` : '<div class="song-cover" style="background: linear-gradient(135deg, #0a3a0a, #0a1a0a); display: flex; align-items: center; justify-content: center; color: #00ff88; font-size: 32px;">🎵</div>'}
+                    ${song.coverUrl ? `<img class="song-cover" src="${song.coverUrl}" alt="Обложка" onerror="this.style.display='none'">` : '<div class="song-cover" style="background: linear-gradient(135deg, #0a3a0a, #0a1a0a); display: flex; align-items: center; justify-content: center; color: #00ff88; font-size: 32px;">🎵</div>'}
                     <div class="song-info">
                         <div class="song-title">${escapeHtml(song.title)} ${currentPlayingId === song.id ? '🎵' : ''}</div>
                         <div class="song-artist">🎤 ${escapeHtml(song.artist)}</div>
@@ -665,7 +679,8 @@
                 title: song.title,
                 artist: song.artist,
                 album: song.album,
-                cover: song.cover,
+                mp3Url: song.mp3Url,
+                coverUrl: song.coverUrl,
                 added: song.added
             }));
             const dataStr = JSON.stringify(exportData, null, 2);
