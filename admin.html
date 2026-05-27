@@ -24,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* Анимации */
         @keyframes fadeInScale {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
@@ -41,7 +40,6 @@
             100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
         }
 
-        /* Форма входа */
         .login-container {
             max-width: 400px;
             margin: 100px auto;
@@ -98,7 +96,6 @@
             animation: glowPulse 0.5s;
         }
 
-        /* Основной интерфейс */
         .admin-panel {
             display: none;
             background: rgba(10, 20, 10, 0.95);
@@ -118,7 +115,6 @@
             font-size: 28px;
         }
 
-        /* Форма добавления */
         .add-song-form {
             background: rgba(0, 20, 0, 0.6);
             border-radius: 15px;
@@ -184,7 +180,6 @@
             gap: 15px;
         }
 
-        /* Список песен */
         .songs-list {
             margin-top: 30px;
         }
@@ -259,26 +254,10 @@
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 8px 16px;
+            padding: 8px 20px;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-play::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-play:hover::before {
-            left: 100%;
+            font-size: 14px;
         }
 
         .btn-play:hover {
@@ -291,7 +270,7 @@
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 8px 16px;
+            padding: 8px 20px;
             cursor: pointer;
             transition: all 0.3s;
         }
@@ -310,23 +289,6 @@
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
         }
 
         .btn-primary:hover {
@@ -350,7 +312,6 @@
             transform: scale(1.05);
         }
 
-        /* Уведомления с мини-плеером */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -358,47 +319,12 @@
             background: rgba(0, 30, 0, 0.95);
             backdrop-filter: blur(10px);
             color: #00ff88;
-            padding: 16px 24px;
-            border-radius: 15px;
+            padding: 12px 24px;
+            border-radius: 10px;
             z-index: 1000;
             animation: slideIn 0.3s ease;
             border: 1px solid rgba(0, 255, 0, 0.3);
             font-weight: 500;
-            min-width: 280px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .toast-player {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(0, 255, 0, 0.2);
-        }
-
-        .toast-player button {
-            background: linear-gradient(135deg, #0a4d0a, #00aa44);
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: white;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .toast-player button:hover {
-            transform: scale(1.1);
-        }
-
-        .toast-player .song-name {
-            font-size: 12px;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         @keyframes slideIn {
@@ -442,22 +368,25 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #00ff88;
         }
+
+        /* Стили для активного плеера */
+        .now-playing {
+            background: rgba(0, 50, 0, 0.8);
+            border-color: #00ff88;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Форма входа -->
         <div id="loginContainer" class="login-container">
             <h2>🔐 LiquidMusic Admin</h2>
             <input type="password" id="passwordInput" placeholder="Введите пароль" onkeypress="if(event.key==='Enter') checkLogin()">
             <button onclick="checkLogin()">Войти</button>
         </div>
 
-        <!-- Админ панель -->
         <div id="adminPanel" class="admin-panel">
             <h1>🎵 LiquidMusic Admin Panel</h1>
             
-            <!-- Форма добавления песни -->
             <div class="add-song-form">
                 <h3>
                     <span>➕ Добавить новую песню</span>
@@ -495,7 +424,6 @@
                 <button class="btn-primary" onclick="addSong()">➕ Добавить песню</button>
             </div>
 
-            <!-- Список песен -->
             <div class="songs-list">
                 <h3>📋 Список песен</h3>
                 <div id="songsList"></div>
@@ -504,82 +432,31 @@
     </div>
 
     <script>
-        // Пароль для входа
         const ADMIN_PASSWORD = "ROBLOX6767";
-        
-        // Хранилище песен (в localStorage)
         let songs = [];
         let currentAudio = null;
         let currentPlayingId = null;
         
-        // Проверка входа
         function checkLogin() {
             const password = document.getElementById('passwordInput').value;
             if (password === ADMIN_PASSWORD) {
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 loadSongs();
-                showToastWithPlayer('🌿 Вход выполнен успешно!', null, null);
+                showToast('🌿 Вход выполнен успешно!');
             } else {
                 alert('❌ Неверный пароль!');
             }
         }
         
-        // Уведомление с мини-плеером
-        function showToastWithPlayer(message, songTitle, songUrl, songId) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            
-            if (songTitle && songUrl) {
-                toast.innerHTML = `
-                    <div>${message}</div>
-                    <div class="toast-player">
-                        <button class="play-now-btn" data-url="${songUrl}" data-title="${songTitle}" data-id="${songId}">▶</button>
-                        <span class="song-name">${escapeHtml(songTitle)}</span>
-                        <button class="stop-player-btn">⏹</button>
-                    </div>
-                `;
-                document.body.appendChild(toast);
-                
-                const playBtn = toast.querySelector('.play-now-btn');
-                const stopBtn = toast.querySelector('.stop-player-btn');
-                
-                playBtn.addEventListener('click', function() {
-                    if (currentAudio) {
-                        currentAudio.pause();
-                    }
-                    currentAudio = new Audio(this.dataset.url);
-                    currentAudio.play();
-                    currentPlayingId = this.dataset.id;
-                    showToastWithPlayer('🎵 Играет: ' + this.dataset.title, null, null);
-                });
-                
-                stopBtn.addEventListener('click', function() {
-                    if (currentAudio) {
-                        currentAudio.pause();
-                        currentAudio = null;
-                        currentPlayingId = null;
-                        showToast('⏹ Воспроизведение остановлено');
-                    }
-                });
-            } else {
-                toast.innerHTML = `<div>${message}</div>`;
-                document.body.appendChild(toast);
-            }
-            
-            setTimeout(() => toast.remove(), 4000);
-        }
-        
-        // Обычное уведомление
         function showToast(message) {
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.innerHTML = `<div>${message}</div>`;
+            toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
         
-        // Загрузка песен из localStorage
         function loadSongs() {
             const saved = localStorage.getItem('liquidMusicSongs');
             if (saved) {
@@ -588,12 +465,10 @@
             renderSongsList();
         }
         
-        // Сохранение песен в localStorage
         function saveSongs() {
             localStorage.setItem('liquidMusicSongs', JSON.stringify(songs));
         }
         
-        // Предпросмотр обложки
         function previewCover(input) {
             const preview = document.getElementById('coverPreview');
             preview.innerHTML = '';
@@ -610,7 +485,6 @@
             }
         }
         
-        // Добавление песни
         function addSong() {
             const title = document.getElementById('songTitle').value.trim();
             const artist = document.getElementById('songArtist').value.trim();
@@ -618,12 +492,12 @@
             const mp3File = document.getElementById('mp3File').files[0];
             
             if (!title || !artist || !mp3File) {
-                alert('❌ Заполните обязательные поля: Название, Автор и MP3 файл!');
+                alert('❌ Заполните обязательные поля!');
                 return;
             }
             
-            const mp3Reader = new FileReader();
-            mp3Reader.onload = function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
                 const mp3Data = e.target.result;
                 const coverFile = document.getElementById('coverFile').files[0];
                 
@@ -643,7 +517,7 @@
                         saveSongs();
                         renderSongsList();
                         clearForm();
-                        showToastWithPlayer('✅ Песня добавлена!', title, mp3Data, song.id);
+                        showToast('✅ Песня добавлена!');
                     };
                     coverReader.readAsDataURL(coverFile);
                 } else {
@@ -660,13 +534,12 @@
                     saveSongs();
                     renderSongsList();
                     clearForm();
-                    showToastWithPlayer('✅ Песня добавлена!', title, mp3Data, song.id);
+                    showToast('✅ Песня добавлена!');
                 }
             };
-            mp3Reader.readAsDataURL(mp3File);
+            reader.readAsDataURL(mp3File);
         }
         
-        // Очистка формы
         function clearForm() {
             document.getElementById('songTitle').value = '';
             document.getElementById('songArtist').value = '';
@@ -676,9 +549,12 @@
             document.getElementById('coverPreview').innerHTML = '';
         }
         
-        // Удаление всех песен
         function clearAllSongs() {
             if (confirm('⚠️ Удалить ВСЕ песни?')) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
                 songs = [];
                 saveSongs();
                 renderSongsList();
@@ -686,14 +562,13 @@
             }
         }
         
-        // Удаление песни
         function deleteSong(id) {
             if (confirm('🗑 Удалить эту песню?')) {
                 songs = songs.filter(song => song.id !== id);
                 saveSongs();
                 renderSongsList();
                 showToast('🗑 Песня удалена');
-                if (currentPlayingId == id && currentAudio) {
+                if (currentPlayingId === id && currentAudio) {
                     currentAudio.pause();
                     currentAudio = null;
                     currentPlayingId = null;
@@ -701,21 +576,59 @@
             }
         }
         
-        // Воспроизведение песни
         function playSong(id) {
             const song = songs.find(s => s.id === id);
-            if (song && song.mp3) {
+            if (!song || !song.mp3) {
+                showToast('❌ Ошибка: файл не найден');
+                return;
+            }
+            
+            try {
                 if (currentAudio) {
                     currentAudio.pause();
+                    currentAudio = null;
                 }
-                currentAudio = new Audio(song.mp3);
-                currentAudio.play();
-                currentPlayingId = id;
-                showToastWithPlayer('🎵 Играет: ' + song.title + ' - ' + song.artist, song.title, song.mp3, song.id);
+                
+                // Создаём аудио из base64
+                const audio = new Audio(song.mp3);
+                
+                audio.onended = function() {
+                    currentAudio = null;
+                    currentPlayingId = null;
+                    showToast('⏹ Воспроизведение завершено');
+                };
+                
+                audio.onerror = function(e) {
+                    console.error('Audio error:', e);
+                    showToast('❌ Ошибка воспроизведения');
+                    currentAudio = null;
+                    currentPlayingId = null;
+                };
+                
+                audio.play().then(() => {
+                    currentAudio = audio;
+                    currentPlayingId = id;
+                    showToast(`🎵 Играет: ${song.title} - ${song.artist}`);
+                }).catch(error => {
+                    console.error('Play error:', error);
+                    showToast('❌ Ошибка: ' + error.message);
+                });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ Ошибка воспроизведения');
             }
         }
         
-        // Отображение списка песен
+        function stopPlayback() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                currentPlayingId = null;
+                showToast('⏹ Воспроизведение остановлено');
+            }
+        }
+        
         function renderSongsList() {
             const container = document.getElementById('songsList');
             if (songs.length === 0) {
@@ -724,30 +637,28 @@
             }
             
             container.innerHTML = songs.map(song => `
-                <div class="song-item">
+                <div class="song-item ${currentPlayingId === song.id ? 'now-playing' : ''}">
                     ${song.cover ? `<img class="song-cover" src="${song.cover}" alt="Обложка">` : '<div class="song-cover" style="background: linear-gradient(135deg, #0a3a0a, #0a1a0a); display: flex; align-items: center; justify-content: center; color: #00ff88; font-size: 32px;">🎵</div>'}
                     <div class="song-info">
-                        <div class="song-title">${escapeHtml(song.title)}</div>
+                        <div class="song-title">${escapeHtml(song.title)} ${currentPlayingId === song.id ? '🎵' : ''}</div>
                         <div class="song-artist">🎤 ${escapeHtml(song.artist)}</div>
                         <div class="song-album">💿 ${escapeHtml(song.album)}</div>
                         <div class="song-album" style="font-size: 10px; color: #006633;">🕐 ${new Date(song.added).toLocaleDateString()}</div>
                     </div>
                     <div class="song-actions">
-                        <button class="btn-play" onclick="playSong(${song.id})">▶ Воспроизвести</button>
+                        <button class="btn-play" onclick="playSong(${song.id})">${currentPlayingId === song.id ? '⏸' : '▶'} Воспроизвести</button>
                         <button class="btn-delete" onclick="deleteSong(${song.id})">🗑 Удалить</button>
                     </div>
                 </div>
             `).join('');
         }
         
-        // Экранирование HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        // Экспорт в JSON
         function exportToJSON() {
             const exportData = songs.map(song => ({
                 id: song.id,
@@ -768,7 +679,6 @@
             showToast('📄 Экспорт завершен!');
         }
         
-        // Импорт из JSON
         function importFromJSON() {
             const input = document.createElement('input');
             input.type = 'file';
