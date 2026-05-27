@@ -5,46 +5,405 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LiquidMusic Admin</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0a0f0a 0%, #0a2e0a 25%, #0a1a0a 50%, #0d2e0d 75%, #0a0f0a 100%);
-            min-height: 100vh; padding: 20px;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Анимация входа */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+
         .login-container {
-            max-width: 400px; margin: 100px auto; background: rgba(10,20,10,0.95);
-            backdrop-filter: blur(10px); border-radius: 20px; padding: 40px;
-            border: 1px solid rgba(0,255,0,0.2);
+            max-width: 400px;
+            margin: 100px auto;
+            background: rgba(10, 20, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            animation: fadeInScale 0.5s ease;
         }
-        .login-container h2 { text-align: center; margin-bottom: 30px; color: #00ff88; }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
         .login-container input {
-            width: 100%; padding: 12px; margin-bottom: 20px;
-            background: rgba(0,20,0,0.8); border: 1px solid rgba(0,255,0,0.3);
-            border-radius: 10px; color: #00ff88;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+            font-size: 16px;
+            color: #00ff88;
+            transition: all 0.3s;
         }
+
+        .login-container input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            transform: scale(1.02);
+        }
+
         .login-container button {
-            width: 100%; padding: 12px; background: linear-gradient(135deg, #0a4d0a, #00aa44);
-            color: white; border: none; border-radius: 10px; cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        .admin-panel { display: none; background: rgba(10,20,10,0.95); border-radius: 20px; padding: 20px; }
-        h1 { text-align: center; margin-bottom: 30px; color: #00ff88; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(0,255,0,0.2); padding-bottom: 10px; }
-        .tab-btn { background: transparent; color: #00aa66; border: 1px solid rgba(0,255,0,0.3); border-radius: 8px; padding: 10px 20px; cursor: pointer; }
-        .tab-btn.active { background: linear-gradient(135deg, #0a4d0a, #00aa44); color: white; }
-        .add-song-form, .add-news-form { background: rgba(0,20,0,0.6); border-radius: 15px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(0,255,0,0.2); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #00aa66; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; background: rgba(0,20,0,0.8); border: 1px solid rgba(0,255,0,0.3); border-radius: 8px; color: #00ff88; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-primary { background: linear-gradient(135deg, #0a4d0a, #00aa44); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; }
-        .btn-danger { background: linear-gradient(135deg, #4a0a0a, #aa2200); }
-        .song-item, .news-item { background: rgba(0,20,0,0.6); border-radius: 15px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; }
-        .song-info, .news-info { flex: 1; }
-        .song-title, .news-title { font-size: 16px; font-weight: bold; color: #00ff88; }
-        .song-artist, .news-date { color: #00aa66; font-size: 13px; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: rgba(0,30,0,0.95); color: #00ff88; padding: 12px 24px; border-radius: 10px; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .login-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 68, 0.3);
+            animation: glowPulse 0.5s;
+        }
+
+        .admin-panel {
+            display: none;
+            background: rgba(10, 20, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            animation: fadeInScale 0.5s ease;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            font-size: 28px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: #00aa66;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .tab-btn:hover::before {
+            left: 100%;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            color: white;
+            border-color: #00ff88;
+        }
+
+        .add-song-form, .add-news-form {
+            background: rgba(0, 20, 0, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            transition: all 0.3s;
+            animation: slideInLeft 0.4s ease;
+        }
+
+        .add-song-form:hover, .add-news-form:hover {
+            border-color: rgba(0, 255, 136, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #00aa66;
+            transition: color 0.3s;
+        }
+
+        .form-group input:focus + label,
+        .form-group textarea:focus + label {
+            color: #00ff88;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            color: #00ff88;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+            transform: scale(1.01);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 68, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #4a0a0a, #aa2200);
+        }
+
+        .song-item, .news-item {
+            background: rgba(0, 20, 0, 0.6);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        .song-item:hover, .news-item:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 255, 68, 0.2);
+        }
+
+        .song-info, .news-info {
+            flex: 1;
+        }
+
+        .song-title, .news-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ff88;
+            transition: text-shadow 0.3s;
+        }
+
+        .song-item:hover .song-title,
+        .news-item:hover .news-title {
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+        }
+
+        .song-artist, .news-date {
+            color: #00aa66;
+            font-size: 13px;
+        }
+
+        .song-album {
+            color: #008844;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* Мини-плеер в уведомлениях */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 30, 0, 0.95);
+            backdrop-filter: blur(10px);
+            color: #00ff88;
+            padding: 16px 24px;
+            border-radius: 15px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            min-width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .toast-player button {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .toast-player button:hover {
+            transform: scale(1.1);
+        }
+
+        .toast-player .song-name {
+            font-size: 12px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .preview-image img {
+            width: 80px;
+            border-radius: 8px;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+
+        .preview-image img:hover {
+            transform: scale(1.05);
+        }
+
+        textarea {
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #0a4d0a, #00aa44);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 255, 68, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -62,7 +421,7 @@
         </div>
         <div id="songsTab">
             <div class="add-song-form">
-                <h3>➕ Добавить песню</h3>
+                <h3 style="color:#00ff88; margin-bottom:20px;">➕ Добавить песню</h3>
                 <div class="form-row">
                     <div class="form-group"><label>Название *</label><input type="text" id="songTitle"></div>
                     <div class="form-group"><label>Автор *</label><input type="text" id="songArtist"></div>
@@ -71,40 +430,105 @@
                     <div class="form-group"><label>Альбом</label><input type="text" id="songAlbum"></div>
                     <div class="form-group"><label>MP3 ссылка *</label><input type="text" id="songUrl"></div>
                 </div>
-                <div class="form-group"><label>Обложка</label><input type="text" id="coverUrl"></div>
+                <div class="form-group"><label>Обложка</label><input type="text" id="coverUrl"><div id="coverPreview" class="preview-image"></div></div>
                 <button class="btn-primary" onclick="addSong()">➕ Добавить</button>
                 <button class="btn-primary btn-danger" onclick="clearAllSongs()">🗑 Очистить всё</button>
             </div>
-            <div class="songs-list"><h3>📋 Список песен</h3><div id="songsList"></div></div>
+            <div class="songs-list"><h3 style="color:#00ff88;">📋 Список песен</h3><div id="songsList"></div></div>
         </div>
         <div id="newsTab" style="display:none;">
             <div class="add-news-form">
-                <h3>📰 Добавить новость</h3>
+                <h3 style="color:#00ff88; margin-bottom:20px;">📰 Добавить новость</h3>
                 <div class="form-group"><label>Заголовок *</label><input type="text" id="newsTitle"></div>
                 <div class="form-group"><label>Текст *</label><textarea id="newsContent" rows="4"></textarea></div>
-                <div class="form-group"><label>Картинка</label><input type="text" id="newsImage"></div>
+                <div class="form-group"><label>Картинка</label><input type="text" id="newsImage"><div id="newsImagePreview" class="preview-image"></div></div>
                 <button class="btn-primary" onclick="addNews()">📰 Опубликовать</button>
                 <button class="btn-primary btn-danger" onclick="clearAllNews()">🗑 Очистить всё</button>
             </div>
-            <div class="news-list"><h3>📰 Все новости</h3><div id="newsList"></div></div>
+            <div class="news-list"><h3 style="color:#00ff88;">📰 Все новости</h3><div id="newsList"></div></div>
         </div>
     </div>
 </div>
+
 <script>
     const ADMIN_PASSWORD = "admin123";
     let songs = [], news = [];
-    
+    let currentAudio = null;
+    let currentPlayingId = null;
+
     function checkLogin() {
         if (document.getElementById('passwordInput').value === ADMIN_PASSWORD) {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             loadSongs(); loadNews();
-            showToast('Вход выполнен!');
-        } else alert('Неверный пароль!');
+            showToastWithPlayer('🌿 Вход выполнен успешно!', null, null);
+        } else {
+            alert('❌ Неверный пароль!');
+        }
     }
-    
+
+    function showToastWithPlayer(message, songTitle, songUrl) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        
+        if (songTitle && songUrl) {
+            toast.innerHTML = `
+                <div>${message}</div>
+                <div class="toast-player">
+                    <button class="play-now-btn" data-url="${songUrl}" data-title="${songTitle}">▶</button>
+                    <span class="song-name">${escapeHtml(songTitle)}</span>
+                    <button class="stop-player-btn">⏹</button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            const playBtn = toast.querySelector('.play-now-btn');
+            const stopBtn = toast.querySelector('.stop-player-btn');
+            
+            playBtn.addEventListener('click', function() {
+                if (currentAudio) {
+                    currentAudio.pause();
+                }
+                currentAudio = new Audio(this.dataset.url);
+                currentAudio.play();
+                showToastWithPlayer('🎵 Играет: ' + this.dataset.title, null, null);
+            });
+            
+            stopBtn.addEventListener('click', function() {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                    showToast('⏹ Воспроизведение остановлено');
+                }
+            });
+        } else {
+            toast.innerHTML = `<div>${message}</div>`;
+            document.body.appendChild(toast);
+        }
+        
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<div>${message}</div>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function playSongPreview(url, title) {
+        if (currentAudio) {
+            currentAudio.pause();
+        }
+        currentAudio = new Audio(url);
+        currentAudio.play();
+        showToastWithPlayer('🎵 Играет: ' + title, title, url);
+    }
+
     function loadSongs() { const s = localStorage.getItem('liquidMusicSongs'); if(s) songs = JSON.parse(s); renderSongs(); }
     function saveSongs() { localStorage.setItem('liquidMusicSongs', JSON.stringify(songs)); }
+    
     function addSong() {
         const title = document.getElementById('songTitle').value.trim();
         const artist = document.getElementById('songArtist').value.trim();
@@ -113,44 +537,72 @@
         const coverUrl = document.getElementById('coverUrl').value.trim();
         if(!title || !artist || !mp3Url) { alert('Заполните поля!'); return; }
         songs.unshift({ id: Date.now(), title, artist, album: album || 'Без альбома', mp3Url, coverUrl: coverUrl || null });
-        saveSongs(); renderSongs(); clearSongForm(); showToast('Песня добавлена!');
+        saveSongs(); renderSongs(); clearSongForm(); showToast('✅ Песня добавлена!');
     }
+    
     function clearSongForm() {
         document.getElementById('songTitle').value = '';
         document.getElementById('songArtist').value = '';
         document.getElementById('songAlbum').value = '';
         document.getElementById('songUrl').value = '';
         document.getElementById('coverUrl').value = '';
+        document.getElementById('coverPreview').innerHTML = '';
     }
-    function deleteSong(id) { if(confirm('Удалить?')) { songs = songs.filter(s => s.id !== id); saveSongs(); renderSongs(); showToast('Удалено'); } }
-    function clearAllSongs() { if(confirm('Удалить всё?')) { songs = []; saveSongs(); renderSongs(); showToast('Все песни удалены'); } }
+    
+    function deleteSong(id) { if(confirm('Удалить?')) { songs = songs.filter(s => s.id !== id); saveSongs(); renderSongs(); showToast('🗑 Песня удалена'); } }
+    function clearAllSongs() { if(confirm('Удалить всё?')) { songs = []; saveSongs(); renderSongs(); showToast('🗑 Все песни удалены'); } }
+    
     function renderSongs() {
         const c = document.getElementById('songsList');
-        if(!songs.length) { c.innerHTML = '<p style="color:#008844;">🌿 Нет песен</p>'; return; }
-        c.innerHTML = songs.map(s => `<div class="song-item"><div class="song-info"><div class="song-title">${escapeHtml(s.title)}</div><div class="song-artist">${escapeHtml(s.artist)}</div><div class="song-artist" style="font-size:10px;">💿 ${escapeHtml(s.album)}</div></div><button class="btn-primary btn-danger" onclick="deleteSong(${s.id})">🗑</button></div>`).join('');
+        if(!songs.length) { c.innerHTML = '<p style="color:#008844; text-align:center;">🌿 Нет добавленных песен</p>'; return; }
+        c.innerHTML = songs.map(s => `
+            <div class="song-item">
+                <div class="song-info">
+                    <div class="song-title">${escapeHtml(s.title)}</div>
+                    <div class="song-artist">🎤 ${escapeHtml(s.artist)}</div>
+                    <div class="song-album">💿 ${escapeHtml(s.album)}</div>
+                </div>
+                <button class="play-btn" onclick="playSongPreview('${s.mp3Url}', '${escapeHtml(s.title)}')">▶</button>
+                <button class="btn-primary btn-danger" onclick="deleteSong(${s.id})">🗑</button>
+            </div>
+        `).join('');
     }
     
     function loadNews() { const n = localStorage.getItem('liquidMusicNews'); if(n) news = JSON.parse(n); renderNews(); }
     function saveNews() { localStorage.setItem('liquidMusicNews', JSON.stringify(news)); }
+    
     function addNews() {
         const title = document.getElementById('newsTitle').value.trim();
         const content = document.getElementById('newsContent').value.trim();
         const imageUrl = document.getElementById('newsImage').value.trim();
         if(!title || !content) { alert('Заполните поля!'); return; }
         news.unshift({ id: Date.now(), title, content, imageUrl: imageUrl || null, date: new Date().toISOString() });
-        saveNews(); renderNews(); clearNewsForm(); showToast('Новость добавлена!');
+        saveNews(); renderNews(); clearNewsForm(); showToast('✅ Новость добавлена!');
     }
+    
     function clearNewsForm() {
         document.getElementById('newsTitle').value = '';
         document.getElementById('newsContent').value = '';
         document.getElementById('newsImage').value = '';
+        document.getElementById('newsImagePreview').innerHTML = '';
     }
-    function deleteNews(id) { if(confirm('Удалить новость?')) { news = news.filter(n => n.id !== id); saveNews(); renderNews(); showToast('Новость удалена'); } }
-    function clearAllNews() { if(confirm('Удалить всё?')) { news = []; saveNews(); renderNews(); showToast('Все новости удалены'); } }
+    
+    function deleteNews(id) { if(confirm('Удалить новость?')) { news = news.filter(n => n.id !== id); saveNews(); renderNews(); showToast('🗑 Новость удалена'); } }
+    function clearAllNews() { if(confirm('Удалить всё?')) { news = []; saveNews(); renderNews(); showToast('🗑 Все новости удалены'); } }
+    
     function renderNews() {
         const c = document.getElementById('newsList');
-        if(!news.length) { c.innerHTML = '<p style="color:#008844;">📭 Нет новостей</p>'; return; }
-        c.innerHTML = news.map(n => `<div class="news-item"><div class="news-info"><div class="news-title">📌 ${escapeHtml(n.title)}</div><div class="news-date">📅 ${new Date(n.date).toLocaleString()}</div><div style="font-size:12px; color:#008844;">${escapeHtml(n.content)}</div></div><button class="btn-primary btn-danger" onclick="deleteNews(${n.id})">🗑</button></div>`).join('');
+        if(!news.length) { c.innerHTML = '<p style="color:#008844; text-align:center;">📭 Нет новостей</p>'; return; }
+        c.innerHTML = news.map(n => `
+            <div class="news-item">
+                <div class="news-info">
+                    <div class="news-title">📌 ${escapeHtml(n.title)}</div>
+                    <div class="news-date">📅 ${new Date(n.date).toLocaleString()}</div>
+                    <div style="font-size:12px; color:#008844; margin-top:5px;">${escapeHtml(n.content)}</div>
+                </div>
+                <button class="btn-primary btn-danger" onclick="deleteNews(${n.id})">🗑</button>
+            </div>
+        `).join('');
     }
     
     function showTab(tab) {
@@ -160,9 +612,22 @@
     }
     
     function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-    function showToast(m) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
     
     document.getElementById('passwordInput').addEventListener('keypress', function(e) { if(e.key === 'Enter') checkLogin(); });
+    document.getElementById('coverUrl').addEventListener('input', function() { previewImage('coverUrl', 'coverPreview'); });
+    document.getElementById('newsImage').addEventListener('input', function() { previewImage('newsImage', 'newsImagePreview'); });
+    
+    function previewImage(inputId, previewId) {
+        const url = document.getElementById(inputId).value;
+        const preview = document.getElementById(previewId);
+        preview.innerHTML = '';
+        if(url) {
+            const img = document.createElement('img');
+            img.src = url;
+            img.onerror = () => { preview.innerHTML = '<span style="color:#00aa66;">❌ Не удалось загрузить</span>'; };
+            preview.appendChild(img);
+        }
+    }
 </script>
 </body>
 </html>
